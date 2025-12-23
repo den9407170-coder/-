@@ -1,32 +1,87 @@
-#include <iostream>
-#include <stdexcept>
+﻿#include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
-// Функция вычисления средней скорости: v = s / t
-double averageSpeed(double distance, double time) {
-    if (time == 0.0) {
-        throw invalid_argument("Время не может быть равно 0 (деление на ноль).");
+void setConsoleColor(const string& color) {
+    if (color == "blue") {
+        system("color 01");
     }
-    return distance / time;
+    else if (color == "green") {
+        system("color 02");
+    }
+    else if (color == "yellow") {
+        system("color 06");
+    }
+    else if (color == "red") {
+        system("color 04");
+    }
+    else {
+        system("color 07");
+    }
+}
+
+void saveSettings(const string& quote, const string& color) {
+    ofstream fout("settings.txt");
+    fout << quote << "\n" << color;
+    fout.close();
 }
 
 int main() {
-    setlocale(LC_ALL, "RUS");
+    setlocale(0, "");
 
-    double distance, time;
-    cout << "Введите общее расстояние (например, км): ";
-    cin >> distance;
-    cout << "Введите общее время (например, ч): ";
-    cin >> time;
-    if (distance < 0 || time < 0)
-    {
-        cout << "Ошибка!" << endl;
+    string quote;
+    string color;
+
+    ifstream fin("settings.txt");
+
+    if (fin.is_open()) {
+
+        getline(fin, quote);
+        getline(fin, color);
+        fin.close();
+
+        setConsoleColor(color);
+
+        cout << "Сохраненные настройки:\n";
+        cout << "Любимая цитата: " << quote << endl;
+        cout << "Цвет текста: " << color << endl;
+
+        char choice;
+        cout << "\nХотите изменить настройки? (y/n): ";
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 'y' || choice == 'Y') {
+            cout << "Введите новую любимую цитату: ";
+            getline(cin, quote);
+
+            cout << "Введите цвет текста (blue, green, yellow, red): ";
+            cin >> color;
+
+            saveSettings(quote, color);
+            setConsoleColor(color);
+
+            cout << "Настройки обновлены!\n";
+        }
     }
     else {
-        double speed = averageSpeed(distance, time);
-        cout << "Средняя скорость: " << speed << endl;
+
+        cout << "Введите любимую цитату: ";
+        getline(cin, quote);
+
+        cout << "Введите цвет текста (blue, green, yellow, red): ";
+        cin >> color;
+
+        saveSettings(quote, color);
+        setConsoleColor(color);
+
+        cout << "Настройки сохранены!\n";
     }
 
+    cout << "\nИтог:\n";
+    cout << "Любимая цитата: " << quote << endl;
+    cout << "Цвет текста: " << color << endl;
 
     return 0;
 }
