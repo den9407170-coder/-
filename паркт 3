@@ -84,4 +84,5 @@ int main() {
     cout << "Цвет текста: " << color << endl;
 
     return 0;
+
 }
